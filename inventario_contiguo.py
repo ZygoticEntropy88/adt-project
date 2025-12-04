@@ -73,7 +73,7 @@ class InventarioContiguo:
 
     def existe(self, nombre : str) -> bool:
         i : int = 0
-        while i < self._get_longitud() and self._get_valores()[i] != nombre:
+        while i < self._get_longitud() and self._get_nombres()[i] != nombre:
             i += 1
 
         return i < self._get_longitud()
@@ -202,3 +202,4 @@ class InventarioContiguo:
                 valores[i] -= cantidad
                 return
             i += 1
+
