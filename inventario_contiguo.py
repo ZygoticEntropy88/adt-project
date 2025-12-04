@@ -185,7 +185,7 @@ class InventarioContiguo:
                     return
                 i += 1
 
-    #Aquí hay q comprobar que la cantidad a eliminar sea <= 0 no? En el enunciado se les ha olvidado.
+    #Aquí hay que comprobar que la cantidad a eliminar sea <= 0, ¿no? En el enunciado se les ha olvidado.
     def eliminar(self, nombre: str, cantidad : float = 1.0) -> None:
 
 
