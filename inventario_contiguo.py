@@ -192,4 +192,7 @@ class InventarioContiguo:
         elif cantidad < 0:
             raise InventarioError(f"Valor a eliminar ha de ser mayor o igual a 0.")
 
+        nombres = self._get_nombres()
+        valores = self._get_valores()
+        l = self._get_longitud()
 
