@@ -196,3 +196,9 @@ class InventarioContiguo:
         valores = self._get_valores()
         l = self._get_longitud()
 
+        i: int = 0
+        while i < l:
+            if nombres[i] == nombre:
+                valores[i] -= cantidad
+                return
+            i += 1
