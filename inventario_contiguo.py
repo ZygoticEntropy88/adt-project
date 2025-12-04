@@ -187,5 +187,9 @@ class InventarioContiguo:
 
     #Aquí hay que comprobar que la cantidad a eliminar sea <= 0, ¿no? En el enunciado se les ha olvidado.
     def eliminar(self, nombre: str, cantidad : float = 1.0) -> None:
+        if not self.existe(nombre):
+            raise InventarioError("El elemento que se quiere eliminar no está en el inventario.")
+        elif cantidad < 0:
+            raise InventarioError(f"Valor a eliminar ha de ser mayor o igual a 0.")
 
 
