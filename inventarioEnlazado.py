@@ -66,16 +66,16 @@ class Inventario:
         return self.total_items()
 
     def __iter__(self):
-        actual: 'Inventario.Nodo' = self._primer_nodo
+        actual: 'Inventario.Nodo' = self._get_primer_nodo()
         while actual is not None:
             yield actual.get_nombre()
             actual = actual.get_siguiente()
 
     def __str__(self) -> str:
-        msg: str = "################# INVENTARIO #################\n"
+        msg: str = "\n\n################# INVENTARIO #################\n"
         
         pos = 0
-        actual = self._primer_nodo
+        actual = self._get_primer_nodo()
         while actual is not None:
             msg += f"\t{pos} - {actual}\n"
             actual = actual.get_siguiente()
@@ -100,7 +100,7 @@ class Inventario:
 
     def _buscar_nodo(self, nombre: str) -> 'Inventario.Nodo':
         """Dado el nombre de un nodo, lo busca y devuelve el nodo nombre:valor"""
-        actual = self._primer_nodo
+        actual = self._get_primer_nodo()
         while actual is not None:
             if actual.get_nombre() == nombre:
                 return actual
@@ -112,10 +112,10 @@ class Inventario:
         Busca y devuelve el nodo anterior al nodo proporcionado.
         Si el nodo proporcionado es el primero o None, devuelve None.
         """
-        if nodo is None or nodo is self._primer_nodo:
+        if nodo is None or nodo is self._get_primer_nodo():
             return None
 
-        nodo_anterior: 'Inventario.Nodo' = self._primer_nodo
+        nodo_anterior: 'Inventario.Nodo' = self._get_primer_nodo()
         
         while nodo_anterior is not None and nodo_anterior.get_siguiente() is not nodo:
             nodo_anterior = nodo_anterior.get_siguiente()
@@ -138,7 +138,7 @@ class Inventario:
             nodo.set_valor(nodo.get_valor() + valor)
         else:
             # Inserta al principio de la lista
-            nuevo_nodo = Inventario.Nodo(nombre, valor, self._primer_nodo)
+            nuevo_nodo:'Inventario.Nodo' = Inventario.Nodo(nombre, valor, self._get_primer_nodo())
             self._set_primer_nodo(nuevo_nodo)
             self._longitud += 1
 
@@ -175,7 +175,7 @@ class Inventario:
         else:
             nodo_anterior: 'Inventario.Nodo' = self._get_nodo_previo(nodo_actual)
             
-            if nodo_actual is self._primer_nodo:
+            if nodo_actual is self._get_primer_nodo():
                 self._set_primer_nodo(nodo_actual.get_siguiente())         
             elif nodo_anterior is not None:
                 nodo_anterior.set_siguiente(nodo_actual.get_siguiente())
@@ -184,7 +184,7 @@ class Inventario:
 
     def vaciar(self) -> None:
         """Elimina todos los elementos del inventario."""
-        self._primer_nodo = None
+        self._set_primer_nodo(None)
         self._longitud = 0
 
     def fusionar(self, otro: 'Inventario') -> None:
@@ -296,7 +296,7 @@ class Inventario:
     def cantidad_total(self) -> float:
         """Retorna la suma de los valores de todos los elementos del inventario."""
         total_inventario: float = 0.0
-        actual: 'Inventario.Nodo' = self._primer_nodo
+        actual: 'Inventario.Nodo' = self._get_primer_nodo()
         while actual is not None:
             total_inventario += actual.get_valor()
             actual = actual.get_siguiente()
@@ -306,7 +306,7 @@ class Inventario:
     def _invertir(self) -> None:
         """Invierte el orden de la lista enlazada."""
         nodo_anterior: 'Inventario.Nodo' = None
-        nodo_actual: 'Inventario.Nodo' = self._primer_nodo
+        nodo_actual: 'Inventario.Nodo' = self._get_primer_nodo()
         while nodo_actual is not None:
             nodo_siguiente: 'Inventario.Nodo' = nodo_actual.get_siguiente()
             nodo_actual.set_siguiente(nodo_anterior)
@@ -320,49 +320,20 @@ class Inventario:
         """
         Ordena la lista enlazada por el valor del elemento (Insertion Sort).
         """
-        if self._get_longitud() <= 1:
-            return
-
-        lista_ordenada: 'Inventario.Nodo' = None
-        nodo_actual = self._primer_nodo
-
-        while nodo_actual is not None:
-            nodo_siguiente = nodo_actual.get_siguiente()
-            
-            # Caso 1: Insertar en la lista ordenada vacía o al inicio
-            # Nota: Requiere que Nodo implemente __le__ (<=)
-            if lista_ordenada is None or nodo_actual <= lista_ordenada:
-                nodo_actual.set_siguiente(lista_ordenada)
-                lista_ordenada = nodo_actual
-            else:
-                # Caso 2: Buscar dónde insertar en la lista ordenada
-                nodo_temp = lista_ordenada
-                # Nota: Requiere que Nodo implemente __lt__ (<)
-                while nodo_temp.get_siguiente() is not None and nodo_temp.get_siguiente() < nodo_actual:
-                    nodo_temp = nodo_temp.get_siguiente()
-                
-                nodo_actual.set_siguiente(nodo_temp.get_siguiente())
-                nodo_temp.set_siguiente(nodo_actual)
-            
-            nodo_actual = nodo_siguiente
-
-        self._set_primer_nodo(lista_ordenada)
-            
-        if descendente:
-            self._invertir()
+        pass 
 
 
     def maximo(self) -> str:
         """
         Devuelve el elemento con el valor más alto.
         """
-        if self._primer_nodo is None:
+        if self._get_primer_nodo() is None:
             raise InventarioError("El inventario está vacío.")
         
-        max_nombre: str = self._primer_nodo.get_nombre()
-        max_valor: float = self._primer_nodo.get_valor()
+        max_nombre: str = self._get_primer_nodo().get_nombre()
+        max_valor: float = self._get_primer_nodo().get_valor()
         
-        actual: 'Inventario.Nodo' = self._primer_nodo.get_siguiente()
+        actual: 'Inventario.Nodo' = self._get_primer_nodo().get_siguiente()
         while actual is not None:
             if actual.get_valor() > max_valor:
                 max_valor = actual.get_valor()
@@ -375,13 +346,13 @@ class Inventario:
         """
         Devuelve el elemento con el valor más bajo.
         """
-        if self._primer_nodo is None:
+        if self._get_primer_nodo() is None:
             raise InventarioError("El inventario está vacío.")
         
-        min_nombre: str = self._primer_nodo.get_nombre()
-        min_valor: float = self._primer_nodo.get_valor()
+        min_nombre: str = self._get_primer_nodo().get_nombre()
+        min_valor: float = self._get_primer_nodo().get_valor()
         
-        actual: 'Inventario.Nodo' = self._primer_nodo.get_siguiente()
+        actual: 'Inventario.Nodo' = self._get_primer_nodo().get_siguiente()
         while actual is not None:
             if actual.get_valor() < min_valor:
                 min_valor = actual.get_valor()
@@ -396,7 +367,7 @@ class Inventario:
         Crea y retorna un nuevo inventario mediante copia profunda.
         """
         nuevo_inventario = Inventario()
-        actual = self._primer_nodo
+        actual = self._get_primer_nodo()
         
         while actual is not None:
             # Al usar 'agregar', se inserta al principio (invirtiendo el orden)
@@ -407,3 +378,48 @@ class Inventario:
         nuevo_inventario._invertir()
         
         return nuevo_inventario
+
+if __name__ == "__main__":
+    inv: Inventario = Inventario()
+    inv.agregar("manzanas", 5.0)
+    inv.agregar("naranjas", 3.0)
+    inv.agregar("peras", 4.0)
+    inv.agregar("manzanas", 2.0)
+
+    print("Inventario inicial:", inv)
+    
+    print("Cantidad de manzanas:", inv.consultar("manzanas"))
+    print("Existe 'kiwis'?", inv.existe("kiwis"))
+
+    inv.actualizar("naranjas", 10.0)
+    inv.eliminar("manzanas", 3.0)
+
+    print("Tras actualizar y eliminar:", inv)
+    print("Máximo:", inv.maximo())
+    print("Mínimo:", inv.minimo())
+    print("Ordenado:", inv.ordenar_por_valor(descendente=True))
+    
+    otro: Inventario = Inventario()
+    otro.agregar("plátanos", 5.0)
+    otro.agregar("peras", 1.0)
+    
+    inv.fusionar(otro)
+    print("Fusionado:", inv)
+
+    inv.diferencia(otro)
+    print("Diferencia:", inv)
+    
+    copia: Inventario = inv.copiar()
+    print("Copia creada:", copia)
+
+    print("Recorriendo elementos:")
+    for nombre in inv:
+        print(f" - {nombre}: { inv.consultar(nombre)}")
+
+    inv.vaciar()
+    print("Inventario vacío:", inv)
+
+    copia.guardar("inventario.csv")
+    nuevo: Inventario = Inventario()
+    nuevo.cargar("inventario.csv")
+    print("Cargado desde CSV:", nuevo)
